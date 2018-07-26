@@ -1,0 +1,16 @@
+{
+
+  "description": "Tries to block all EU cookie consent popus wihtout using blocklists",
+  "manifest_version": 2,
+  "name": "Cookie Popup Blocker",
+  "version": "1.0",
+  "homepage_url": "https://github.com/jannisch/cookie-popup-blocker",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "run_at": "document_end",
+      "js": ["index.js"]
+    }
+  ]
+
+}
