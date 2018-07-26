@@ -8,7 +8,7 @@ function isCookieNotice(node) {
     node.className,
     node.getAttribute('aria-label')
   ]
-  return attrs.some(attr => /(cookie|gdpr|consent)/i.test(attr))
+  return attrs.some(attr => /(cookie|gdpr|consent|privacy|opt-in)/i.test(attr))
 }
 
 function inspectAndStrip(nodeList) {
@@ -20,7 +20,7 @@ function inspectAndStrip(nodeList) {
         node.remove()
         return true
       }
-      
+
       // else check if div is on top screen border
       var rect = node.getBoundingClientRect()
       if (rect.top == 0) {
@@ -60,7 +60,7 @@ var callback = function (mutationRecords) {
 
   for (const mut of mutationRecords) {
     var nodeList = mut.addedNodes
-    
+
     var ary = Array.prototype.slice.call(nodeList)
     ary = ary.filter(node => {
       return node.tagName == 'DIV' || node.tagName == 'SECTION'

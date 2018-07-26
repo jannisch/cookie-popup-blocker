@@ -1,9 +1,9 @@
 {
 
-  "description": "Tries to block all EU cookie consent popus wihtout using blocklists",
+  "description": "This extensions blocks annoying cookie usage popus shown in the EU to comply with GDPR without using blocklists. It is extremely lightweight yet very effective and blocks all popus before appearing in contrast to existing extensions.",
   "manifest_version": 2,
   "name": "Cookie Popup Blocker",
-  "version": "1.0",
+  "version": "1.1",
   "homepage_url": "https://github.com/jannisch/cookie-popup-blocker",
   "content_scripts": [
     {
