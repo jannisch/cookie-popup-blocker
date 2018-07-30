@@ -1,3 +1,7 @@
+'use strict'
+
+const popupTagNames = ['DIV', 'SECTION', 'FOOTER', 'ASIDE']
+
 function isFixed(node) {
   return window.getComputedStyle(node).position === 'fixed'
 }
@@ -46,10 +50,10 @@ function inspectAndStrip(nodeList) {
 }
 
 // run initially (after dom content loaded)
-var divs = document.querySelectorAll('div')
-inspectAndStrip(divs)
-var sections = document.querySelectorAll('section')
-inspectAndStrip(sections)
+for (const tag of popupTagNames) {
+  const nodes = document.querySelectorAll(tag)
+  if (inspectAndStrip(nodes)) break
+}
 
 
 // watch for changes
@@ -63,7 +67,7 @@ var callback = function (mutationRecords) {
 
     var ary = Array.prototype.slice.call(nodeList)
     ary = ary.filter(node => {
-      return node.tagName == 'DIV' || node.tagName == 'SECTION'
+      return popupTagNames.includes(node.tagName)
     })
 
     addedNodes = addedNodes.concat(ary)
