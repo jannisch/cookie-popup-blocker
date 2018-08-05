@@ -1,6 +1,6 @@
 'use strict'
 
-const popupTagNames = ['DIV', 'SECTION', 'FOOTER', 'ASIDE']
+const popupTagNames = ['DIV', 'SECTION', 'FOOTER', 'ASIDE', 'FORM']
 
 function isFixed(node) {
   return window.getComputedStyle(node).position === 'fixed'
@@ -52,7 +52,7 @@ function inspectAndStrip(nodeList) {
 // run initially (after dom content loaded)
 for (const tag of popupTagNames) {
   const nodes = document.querySelectorAll(tag)
-  if (inspectAndStrip(nodes)) break
+  inspectAndStrip(nodes)
 }
 
 
