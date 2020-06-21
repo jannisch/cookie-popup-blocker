@@ -53,10 +53,11 @@ browser.storage.sync.get(hostname).then(res => {
   if (res[hostname] == 'i') {
     browser.runtime.sendMessage('ignored')
   } else {
-    const blocked = popupTagNames.some(tag => {
+    const blocked = popupTagNames.reduce((res, tag) => {
       const nodes = document.querySelectorAll(tag)
-      return inspectAndStrip(nodes)
-    })
+      if (inspectAndStrip(nodes)) res = true
+      return res
+    }, false)
     if (blocked) browser.runtime.sendMessage('blocked')
   }
 })
