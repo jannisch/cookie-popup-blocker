@@ -1,5 +1,3 @@
-'use strict'
-
 const popupTagNames = ['DIV', 'SECTION', 'FOOTER', 'ASIDE', 'FORM']
 
 function isFixed(node) {
@@ -50,11 +48,18 @@ function inspectAndStrip(nodeList) {
 }
 
 // run initially (after dom content loaded)
-for (const tag of popupTagNames) {
-  const nodes = document.querySelectorAll(tag)
-  inspectAndStrip(nodes)
-}
-
+const hostname = window.location.hostname
+browser.storage.sync.get(hostname).then(res => {
+  if (res[hostname] == 'i') {
+    browser.runtime.sendMessage('ignored')
+  } else {
+    const blocked = popupTagNames.some(tag => {
+      const nodes = document.querySelectorAll(tag)
+      return inspectAndStrip(nodes)
+    })
+    if (blocked) browser.runtime.sendMessage('blocked')
+  }
+})
 
 // watch for changes
 
