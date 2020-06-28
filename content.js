@@ -59,31 +59,27 @@ browser.storage.sync.get(hostname).then(res => {
       return res
     }, false)
     if (blocked) browser.runtime.sendMessage('blocked')
+    createObserver()
   }
 })
 
-// watch for changes
+function createObserver() {
+  // callback function to execute when mutations are observed
+  var observer = new MutationObserver(mutationRecords => {
+    var addedNodes = []
 
-// callback function to execute when mutations are observed
-var callback = function (mutationRecords) {
-  var addedNodes = []
+    for (const mut of mutationRecords) {
+      var nodeList = mut.addedNodes
 
-  for (const mut of mutationRecords) {
-    var nodeList = mut.addedNodes
+      var ary = Array.prototype.slice.call(nodeList)
+      ary = ary.filter(node => popupTagNames.includes(node.tagName))
 
-    var ary = Array.prototype.slice.call(nodeList)
-    ary = ary.filter(node => {
-      return popupTagNames.includes(node.tagName)
-    })
+      addedNodes = addedNodes.concat(ary)
+    }
 
-    addedNodes = addedNodes.concat(ary)
-  }
-
-  inspectAndStrip(addedNodes)
-
-  // TODO are all those elements already rendered?
+    const blocked = inspectAndStrip(addedNodes)
+    if (blocked) browser.runtime.sendMessage('blocked')
+  })
+  var config = { attributes: false, childList: true, subtree: true }
+  observer.observe(document.body, config)
 }
-
-var observer = new MutationObserver(callback)
-var config = { attributes: false, childList: true, subtree: true }
-observer.observe(document.body, config)
