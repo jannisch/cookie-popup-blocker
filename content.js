@@ -14,9 +14,8 @@ function isCookieNotice(node) {
 }
 
 function inspectAndStrip(nodeList) {
-  for (const node of nodeList) {
+  return Array.prototype.slice.call(nodeList).reduce((blocked, node) => {
     if (isCookieNotice(node)) {
-
       // check if position:fixed
       if (isFixed(node)) {
         node.remove()
@@ -24,7 +23,7 @@ function inspectAndStrip(nodeList) {
       }
 
       // else check if div is on top screen border
-      var rect = node.getBoundingClientRect()
+      const rect = node.getBoundingClientRect()
       if (rect.top == 0) {
         node.remove()
         return true
@@ -37,14 +36,9 @@ function inspectAndStrip(nodeList) {
           return true
         }
       }
-
-      // otherwise not a cookie notice
     }
-
-    // nodeList loop end
-  }
-
-  return false // if not successful (true) before
+    return blocked
+  }, false)
 }
 
 // run initially (after dom content loaded)
@@ -65,13 +59,11 @@ browser.storage.sync.get(hostname).then(res => {
 
 function createObserver() {
   // callback function to execute when mutations are observed
-  var observer = new MutationObserver(mutationRecords => {
-    var addedNodes = []
+  const observer = new MutationObserver(mutationRecords => {
+    let addedNodes = []
 
     for (const mut of mutationRecords) {
-      var nodeList = mut.addedNodes
-
-      var ary = Array.prototype.slice.call(nodeList)
+      let ary = Array.prototype.slice.call(mut.addedNodes)
       ary = ary.filter(node => popupTagNames.includes(node.tagName))
 
       addedNodes = addedNodes.concat(ary)
@@ -80,6 +72,6 @@ function createObserver() {
     const blocked = inspectAndStrip(addedNodes)
     if (blocked) browser.runtime.sendMessage('blocked')
   })
-  var config = { attributes: false, childList: true, subtree: true }
+  const config = { attributes: false, childList: true, subtree: true }
   observer.observe(document.body, config)
 }
